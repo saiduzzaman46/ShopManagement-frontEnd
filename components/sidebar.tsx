@@ -10,7 +10,7 @@ export default function Sidebar() {
       <nav>
         <ul>
           <li>
-            <Link href="/dashboard">🏠 Home</Link>
+            <Link href="/seller">🏠 Home</Link>
           </li>
           <li>
             <button onClick={() => setIsOpenProduct(!isOpenProduct)}>
@@ -20,24 +20,22 @@ export default function Sidebar() {
             {isOpenProduct && (
               <ul className="submenu">
                 <li>
-                  <Link href="/dashboard/products/add">➕ Add Product</Link>
+                  <Link href="/seller/products/add">➕ Add Product</Link>
                 </li>
                 <li>
-                  <Link href="/dashboard/products/manage">
-                    🛠️ Manage Products
-                  </Link>
+                  <Link href="/seller/products/manage">🛠️ Manage Products</Link>
                 </li>
               </ul>
             )}
           </li>
           <li>
-            <Link href="/dashboard/orders">🛒 Orders</Link>
+            <Link href="/seller/orders">🛒 Orders</Link>
           </li>
           <li>
-            <Link href="/dashboard/notifications">🔔 Notifications</Link>
+            <Link href="/seller/notifications">🔔 Notifications</Link>
           </li>
           <li>
-            <Link href="/dashboard/settings">⚙️ Settings</Link>
+            <Link href="/seller/settings">⚙️ Settings</Link>
           </li>
         </ul>
       </nav>

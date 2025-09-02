@@ -2,7 +2,7 @@ export default function CreateSellerForm() {
   return (
     <main style={{ padding: "2rem" }}>
       <h1>Create Seller Account</h1>
-      <form action="/login" method="POST" encType="multipart/form-data">
+      <form action="/signin" method="POST" encType="multipart/form-data">
         <div>
           <label>Full Name:</label>
           <input type="text" name="fullName" />

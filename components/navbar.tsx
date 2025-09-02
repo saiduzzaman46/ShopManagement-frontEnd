@@ -6,13 +6,13 @@ export default function Navbar() {
     <>
       <header>
         <div>
-          <Link href="/dashboard">
+          <Link href="/seller">
             <h1>Shop Management</h1>
           </Link>
         </div>
         <div>
           <span>👤</span>
-          <Link href="/dashboard/profile">Profile</Link>
+          <Link href="/seller/profile">Profile</Link>
         </div>
       </header>
     </>

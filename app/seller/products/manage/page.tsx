@@ -134,7 +134,7 @@ function ProductRow({ product }: { product: (typeof products)[0] }) {
 function ActionButtons({ productId }: { productId: string }) {
   return (
     <div>
-      <Link href={`/dashboard/products/manage/update/${productId}`}>Edit</Link>
+      <Link href={`/seller/products/manage/update/${productId}`}>Edit</Link>
       <button>Delete</button>
     </div>
   );

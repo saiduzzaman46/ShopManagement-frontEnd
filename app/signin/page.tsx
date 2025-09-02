@@ -2,14 +2,14 @@ export default function LoginPage() {
   return (
     <main style={{ padding: "2rem" }}>
       <h1>Login</h1>
-      <form action="/dashboard" method="POST">
+      <form action="/seller" method="POST">
         <div>
-          <label >Email:</label>
+          <label>Email:</label>
           <input type="email" id="email" name="email" />
         </div>
 
         <div>
-          <label >Password:</label>
+          <label>Password:</label>
           <input type="password" id="password" name="password" />
         </div>
 
