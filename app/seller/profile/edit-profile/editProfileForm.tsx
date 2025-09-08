@@ -66,8 +66,15 @@ export default function EditProfile({
       // const res = await serverApiRequest("/seller/profile/update", "PATCH", formData);
       await axios.patch("/api/updateSeller", formData);
       router.refresh();
-    } catch (error) {
-      console.error("Update failed:", error);
+    } catch (error: any) {
+      // console.log("Update failed:", error);
+      let message;
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data?.message || "Something went wrong";
+      }
+      if (error.status === 409) {
+        setErrors({ email: message });
+      }
       return;
     }
 
@@ -108,8 +115,9 @@ export default function EditProfile({
               onChange={handleChange}
               className="w-full border-b border-gray-300 focus:outline-none py-1"
             />
+
             {errors[name] && (
-              <p className="text-red-500 text-sm mt-1">{errors[name]}</p>
+              <p className="absolute text-red-500 text-sm">{errors[name]}</p>
             )}
           </div>
         ))}

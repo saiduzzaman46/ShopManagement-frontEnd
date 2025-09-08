@@ -15,24 +15,20 @@ const checkAuth = async (): Promise<boolean> => {
   return true;
 };
 
-export default async function DashboardLayout({
+export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const isAuth = await checkAuth();
-
-  if (!isAuth) {
-    redirect("/signin");
-  }
-
   return (
-    <div className="flex min-h-screen">
-      <Sidebar className="w-60" />
-      <div className="flex-1 flex flex-col ml-60">
-        <Navbar />
-        <main className="flex-1 p-4 bg-gray-100">{children}</main>
-        <Footer className="ml-64" />
+    <div className="flex h-screen">
+      <Sidebar className="w-64" />
+      <div className="flex-1 flex flex-col ml-64 h-screen">
+        <div className="fixed top-0 left-64 right-0 z-50">
+          <Navbar />
+        </div>
+        <main className="flex-1 mt-16 overflow-auto p-6">{children}</main>
+        <Footer />
       </div>
     </div>
   );

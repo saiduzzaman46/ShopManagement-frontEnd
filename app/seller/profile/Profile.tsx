@@ -20,31 +20,29 @@ export default function Profile({
 
   const [showPasswordModal, setShowPasswordModal] = useState(false);
 
+  const prodileData = [
+    { label: "Full Name", value: profile.fullName },
+    { label: "Phone Number", value: profile.phone },
+    { label: "E-mail", value: profile.email },
+    { label: "Store Name", value: profile.storeName },
+    { label: "Store Address", value: profile.storeAddress },
+  ];
+  // console.log(Object.entries(data));
+
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">Profile</h1>
 
       <div className="grid grid-cols-2 gap-6 mb-4">
-        <div className="border-b-[1.5px] border-gray-300 pb-1 pr-6  border-gray-300">
-          <p className="text-gray-500 text-sm">Full Name</p>
-          <p className="">{profile.fullName}</p>
-        </div>
-        <div className="border-b-[1.5px] border-gray-300 pb-1 pr-6  border-gray-300">
-          <p className="text-gray-500 text-sm">Phone Number</p>
-          <p>{profile.phone}</p>
-        </div>
-        <div className="col-span-2 border-b-[1.5px] border-gray-300 pb-1 pr-6  border-gray-300">
-          <p className="text-gray-500 text-sm">E-mail</p>
-          <p>{profile.email}</p>
-        </div>
-        <div className="col-span-2 border-b-[1.5px] border-gray-300 pb-1 pr-6  border-gray-300">
-          <p className="text-gray-500 text-sm">Store Name</p>
-          <p> {profile.storeName ? profile.storeName : "Null"}</p>
-        </div>
-        <div className="col-span-2 border-b-[1.5px] border-gray-300 pb-1 pr-6  border-gray-300">
-          <p className="text-gray-500 text-sm">Store Address</p>
-          <p>{profile.storeAddress ? profile.storeAddress : "Null"}</p>
-        </div>
+        {prodileData.map((values) => (
+          <div
+            key={values.label}
+            className="col-span-2 border-b-[1.5px] border-gray-300 pb-1 pr-6  border-gray-300"
+          >
+            <p className="text-gray-500 text-sm">{values.label}</p>
+            <p className="min-h-[1.25rem]">{values.value}</p>
+          </div>
+        ))}
       </div>
 
       <div className="flex gap-4 mt-6">

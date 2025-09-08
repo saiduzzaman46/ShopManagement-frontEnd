@@ -19,7 +19,7 @@ export default function Sidebar({ className }: { className?: string }) {
 
   return (
     <aside
-      className={`${className} bg-white shadow-md flex flex-col h-screen fixed top-0 left-0 `}
+      className={`${className} bg-white shadow-md flex flex-col h-screen fixed top-0 left-0 z-10`}
     >
       {/* Shop name */}
       <div className="h-16 flex items-center justify-center border-b">
@@ -33,10 +33,7 @@ export default function Sidebar({ className }: { className?: string }) {
         <ul className="space-y-2">
           {/* Home */}
           <li>
-            <Link
-              href="/seller"
-              className="flex items-center gap-3 p-2 rounded-lg text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
-            >
+            <Link href="/seller" className="sidebar">
               <Home className="w-5 h-5" />
               <span>Home</span>
             </Link>
@@ -60,19 +57,13 @@ export default function Sidebar({ className }: { className?: string }) {
             {isOpenProduct && (
               <ul className="ml-6 mt-2 space-y-1">
                 <li>
-                  <Link
-                    href="/seller/products/add"
-                    className="flex items-center gap-2 p-2 rounded-lg text-gray-600 hover:bg-indigo-50 hover:text-indigo-600"
-                  >
+                  <Link href="/seller/products/add" className=" sidebar">
                     <PlusCircle className="w-4 h-4" />
                     Add Product
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    href="/seller/products/manage"
-                    className="flex items-center gap-2 p-2 rounded-lg text-gray-600 hover:bg-indigo-50 hover:text-indigo-600"
-                  >
+                  <Link href="/seller/products/manage" className="sidebar">
                     <Wrench className="w-4 h-4" />
                     Manage Products
                   </Link>
@@ -83,10 +74,7 @@ export default function Sidebar({ className }: { className?: string }) {
 
           {/* Orders */}
           <li>
-            <Link
-              href="/seller/orders"
-              className="flex items-center gap-3 p-2 rounded-lg text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
-            >
+            <Link href="/seller/orders" className="sidebar">
               <ShoppingCart className="w-5 h-5" />
               <span>Orders</span>
             </Link>
@@ -94,10 +82,7 @@ export default function Sidebar({ className }: { className?: string }) {
 
           {/* Notifications */}
           <li>
-            <Link
-              href="/seller/notifications"
-              className="flex items-center gap-3 p-2 rounded-lg text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
-            >
+            <Link href="/seller/notifications" className="sidebar">
               <Bell className="w-5 h-5" />
               <span>Notifications</span>
             </Link>
@@ -105,10 +90,7 @@ export default function Sidebar({ className }: { className?: string }) {
 
           {/* Settings */}
           <li>
-            <Link
-              href="/seller/settings"
-              className="flex items-center gap-3 p-2 rounded-lg text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
-            >
+            <Link href="/seller/settings" className="sidebar">
               <Settings className="w-5 h-5" />
               <span>Settings</span>
             </Link>

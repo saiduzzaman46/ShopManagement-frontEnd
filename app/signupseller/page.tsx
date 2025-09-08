@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ClientApiRequest } from "@/api/clientApiRequest";
 import { createSellerSchema } from "@/schemas/sellerSchema";
+import axios from "axios";
 
 const fields = [
   { label: "Full Name", name: "fullName", type: "text" },
@@ -10,9 +10,9 @@ const fields = [
     label: "Phone",
     name: "phone",
     type: "text",
-    placeholder: "+8801XXXXXXXXX",
+    placeholder: "01XXXXXXXXX",
   },
-  { label: "Email", name: "email", type: "email" },
+  { label: "Email", name: "email", type: "text" },
   { label: "Password", name: "password", type: "password" },
   { label: "Store Name", name: "storeName", type: "text" },
   { label: "Store Address", name: "storeAddress", type: "text" },
@@ -42,6 +42,8 @@ const validateForm = (formData: FormData) => {
 
   const result = createSellerSchema.safeParse(validationData);
 
+  console.log(result);
+
   if (!result.success) {
     const formattedErrors: Record<string, string> = {};
     result.error.issues.forEach((err) => {
@@ -56,7 +58,7 @@ export default function CreateSellerForm() {
   const router = useRouter();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleFileValidateField = (e: React.FocusEvent<HTMLInputElement>) => {
+  const handleValidateField = (e: React.FocusEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     if (name === "nidImage" || name === "storeName" || name === "storeAddress")
@@ -73,7 +75,9 @@ export default function CreateSellerForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // console.log(e.currentTarget);
     const formData = new FormData(e.currentTarget);
+    // console.log(formData.entries());
     const validation = validateForm(formData);
 
     if (!validation.success) {
@@ -84,22 +88,21 @@ export default function CreateSellerForm() {
     setErrors({});
 
     try {
-      await ClientApiRequest<{ message: string }>(
-        "/seller/signup",
-        "POST",
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/seller/signup`,
         formData,
-        {
-          "Content-Type": "multipart/form-data",
-        },
-        false
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
       router.push("/signin");
     } catch (error: any) {
-      const message = error.message || "Something went wrong";
-
-      if (message.toLowerCase().includes("email")) {
+      let message;
+      if (error.status === 409 || error.response) {
+        message = error.response?.data?.message || "Something went wrong";
+      }
+      if (error.status === 409) {
         setErrors({ email: message });
       }
+      return;
     }
   };
 
@@ -128,10 +131,10 @@ export default function CreateSellerForm() {
                 name={field.name}
                 type={field.type}
                 placeholder={field.placeholder}
-                onChange={handleFileValidateField}
+                onChange={handleValidateField}
                 className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              {/* Reserve space for errors (fixed height) */}
+
               <div className="h-3">
                 {errors[field.name] && (
                   <p className="text-red-500 text-sm">{errors[field.name]}</p>

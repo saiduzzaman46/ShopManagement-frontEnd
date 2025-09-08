@@ -30,21 +30,20 @@ export default function LoginPage() {
     }
 
     try {
-      const response =
-        // await axios({
-        //   method: "POST",
-        //   url: `${process.env.NEXT_PUBLIC_API_URL}/auth/signin`,
-        //   data: formData,
-        //   headers: { "Content-Type": "application/json" },
-        //   withCredentials: true,
-        // }).then((res) => res.data);
+      const response = await axios({
+        method: "POST",
+        url: `${process.env.NEXT_PUBLIC_API_URL}/auth/signin`,
+        data: formData,
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      }).then((res) => res.data);
 
-        await ClientApiRequest<{
-          message: string;
-          role: string;
-        }>("/auth/signin", "POST", formData);
+      // await ClientApiRequest<{
+      //   message: string;
+      //   role: string;
+      // }>("/auth/signin", "POST", formData);
 
-      console.log("Login successful:", response);
+      // console.log("Login successful:", response);
 
       if (response.role === "seller") {
         router.push("/seller");
@@ -54,7 +53,9 @@ export default function LoginPage() {
         router.push("/signin");
       }
     } catch (error: any) {
-      const message = error.message || "Something went wrong";
+      // console.log("Login error:", error);
+      const message = error.response?.data?.message || "Something went wrong";
+      // console.log(message);
       if (message) {
         setErrors({ message });
       }
