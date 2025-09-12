@@ -95,14 +95,12 @@ export default function CreateSellerForm() {
       );
       router.push("/signin");
     } catch (error: any) {
-      let message;
-      if (error.status === 409 || error.response) {
-        message = error.response?.data?.message || "Something went wrong";
+      if (axios.isAxiosError(error) && error.response) {
+        if (error.status === 409) {
+          setErrors({ email: "Email already exists" });
+          return;
+        }
       }
-      if (error.status === 409) {
-        setErrors({ email: message });
-      }
-      return;
     }
   };
 

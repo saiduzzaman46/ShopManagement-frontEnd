@@ -1,33 +1,14 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import NotificationBell from "./NotificationBell";
 import ProfileDropdown from "./profileDropdown";
-import axios from "axios";
 
-export default function Navbar() {
-  const [profile, setProfile] = useState<{ fullName: string } | null>(null);
+type ProfileType = {
+  fullName: string;
+};
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await axios.get("/api/getProfile");
-
-        setProfile({ fullName: res.data.fullName || "User" });
-      } catch {
-        setProfile(null);
-      }
-    };
-    fetchProfile();
-  }, []);
-
+export default function Navbar({ profile }: { profile: ProfileType | null }) {
   return (
     <nav className="bg-white h-16 flex items-center shadow-md px-5 justify-between sticky top-0 z-50">
-      <div>
-        {/* <Link href="/" className="text-lg font-bold text-indigo-600">
-          Shop<span className="text-gray-800">Management</span>
-        </Link> */}
-      </div>
+      <div>{/* Logo or title */}</div>
 
       <div className="flex justify-end items-center">
         <NotificationBell />

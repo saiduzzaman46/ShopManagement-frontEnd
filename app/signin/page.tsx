@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ClientApiRequest } from "@/api/clientApiRequest";
 import axios from "axios";
 
 export default function LoginPage() {

@@ -1,11 +1,10 @@
-import Navbar from "@/components/navbar/navbar";
-import Sidebar from "@/components/sidebar";
-import Footer from "@/components/footer";
+import { GET } from "@/app/api/seller/get/route";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { ProfileProvider } from "./ProfileContext";
 import axios from "axios";
 
-export default async function DashboardLayout({
+export default async function ProfileLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -26,21 +25,13 @@ export default async function DashboardLayout({
     );
 
     profile = res.data;
-    // console.log("Profile data:", profile);
   } catch (error: any) {
     redirect("/signin");
   }
 
   return (
-    <div className="flex h-screen">
-      <Sidebar className="w-64" />
-      <div className="flex-1 flex flex-col ml-64 h-screen">
-        <div className="fixed top-0 left-64 right-0 z-50">
-          <Navbar profile={profile} />
-        </div>
-        <main className="flex-1 mt-16 overflow-auto p-6">{children}</main>
-        <Footer />
-      </div>
+    <div className="p-6">
+      <ProfileProvider profile={profile}>{children}</ProfileProvider>
     </div>
   );
 }

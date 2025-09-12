@@ -1,17 +1,17 @@
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { updateSellerSchema, UpdateSellerType } from "@/schemas/sellerSchema";
+import { updateSellerSchema } from "@/schemas/sellerSchema";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import axios from "axios";
+import { useProfile } from "../ProfileContext"; // <-- use profile context
 
 const validateField = (name: string, value: any) => {
   const singleFieldSchema =
     updateSellerSchema.shape[name as keyof typeof updateSellerSchema.shape];
-
   if (!singleFieldSchema) return "";
-
   const result = singleFieldSchema.safeParse(value);
   return result.success ? "" : result.error.issues[0].message;
 };
@@ -21,7 +21,6 @@ const validateForm = (formData: FormData) => {
     ...Object.fromEntries(formData.entries()),
     nidImage: formData.getAll("nidImage") as File[],
   };
-
   const result = updateSellerSchema.safeParse(validationData);
 
   if (!result.success) {
@@ -34,13 +33,11 @@ const validateForm = (formData: FormData) => {
   return { success: true, data: result.data, errors: {} };
 };
 
-export default function EditProfile({
-  initialData,
-}: {
-  initialData: UpdateSellerType;
-}) {
+export default function EditProfilePage() {
   const router = useRouter();
-  const [form, setForm] = useState(initialData);
+  const profile = useProfile(); // <-- get profile from provider
+
+  const [form, setForm] = useState(profile);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,11 +60,10 @@ export default function EditProfile({
     setErrors({});
 
     try {
-      // const res = await serverApiRequest("/seller/profile/update", "PATCH", formData);
       await axios.patch("/api/seller/update", formData);
       router.refresh();
+      router.push("/seller/profile");
     } catch (error: any) {
-      // console.log("Update failed:", error);
       if (axios.isAxiosError(error) && error.response) {
         if (error.status === 409) {
           setErrors({ email: "Email already exists" });
@@ -75,8 +71,6 @@ export default function EditProfile({
         }
       }
     }
-
-    router.push("/seller/profile");
   };
 
   return (
@@ -102,18 +96,17 @@ export default function EditProfile({
           },
           { label: "Store Name", name: "storeName", type: "text" },
           { label: "Store Address", name: "storeAddress", type: "text" },
-        ].map(({ label, name, type }) => (
+        ].map(({ label, name, type, placeholder }) => (
           <div key={name}>
             <label className="block text-gray-500 text-sm">{label}</label>
             <input
               name={name}
               type={type}
-              placeholder=" "
+              placeholder={placeholder || " "}
               value={form[name as keyof typeof form] || ""}
               onChange={handleChange}
               className="w-full border-b border-gray-300 focus:outline-none py-1"
             />
-
             {errors[name] && (
               <p className="absolute text-red-500 text-sm">{errors[name]}</p>
             )}

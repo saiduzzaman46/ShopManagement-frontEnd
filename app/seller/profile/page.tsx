@@ -1,11 +1,10 @@
-import { serverApiRequest } from "@/api/serverApiRequest";
 import Profile from "./Profile";
+import { GET } from "@/app/api/seller/get/route";
 
 export default async function ProfilePage() {
   let profile;
   try {
-    const response = await serverApiRequest<any>("/seller/profile");
-    profile = response;
+    profile = await GET("/seller/profile");
   } catch (err) {
     return <p>Unauthorized. Please login.</p>;
   }

@@ -14,6 +14,7 @@ const tableHeaders = [
   "Quantity",
   "Category",
   "Brand",
+  "Tags",
   "Actions",
 ];
 
@@ -27,12 +28,24 @@ export class ProductResponse {
   images?: string[];
   brandName!: string | null;
   categoryName!: string | null;
+  tags?: string;
 }
 
 export default function ManageProduct() {
   const [products, setProducts] = useState<ProductResponse[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<ProductResponse[]>(
+    []
+  );
   const [loading, setLoading] = useState(true);
 
+  // filter states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [minPrice, setMinPrice] = useState<number | "">("");
+  const [maxPrice, setMaxPrice] = useState<number | "">("");
+
+  // load products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -40,6 +53,7 @@ export default function ManageProduct() {
           `${process.env.NEXT_PUBLIC_API_URL}/product/getallproducts`
         );
         setProducts(res.data);
+        setFilteredProducts(res.data);
       } catch (error) {
         console.error("Failed to fetch products", error);
       } finally {
@@ -50,15 +64,124 @@ export default function ManageProduct() {
     fetchProducts();
   }, []);
 
+  // filter logic
+  useEffect(() => {
+    let temp = [...products];
+
+    // search filter
+    if (searchQuery.trim()) {
+      temp = temp.filter(
+        (p) =>
+          p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (p.description?.toLowerCase() ?? "").includes(
+            searchQuery.toLowerCase()
+          )
+      );
+    }
+
+    // category filter
+    if (selectedCategory) {
+      temp = temp.filter((p) => p.categoryName === selectedCategory);
+    }
+
+    // brand filter
+    if (selectedBrand) {
+      temp = temp.filter((p) => p.brandName === selectedBrand);
+    }
+
+    // price filter
+    if (minPrice !== "") {
+      temp = temp.filter((p) => p.price >= Number(minPrice));
+    }
+    if (maxPrice !== "") {
+      temp = temp.filter((p) => p.price <= Number(maxPrice));
+    }
+
+    setFilteredProducts(temp);
+  }, [
+    searchQuery,
+    selectedCategory,
+    selectedBrand,
+    minPrice,
+    maxPrice,
+    products,
+  ]);
+
+  // unique categories & brands for dropdowns
+  const categories = Array.from(
+    new Set(products.map((p) => p.categoryName).filter(Boolean))
+  );
+  const brands = Array.from(
+    new Set(products.map((p) => p.brandName).filter(Boolean))
+  );
+
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <h2 className="text-2xl font-semibold mb-6 text-gray-800">
         Manage Products
       </h2>
 
+      {/* 🔹 Filters & Search */}
+      <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <input
+          type="text"
+          placeholder="Search by title or description..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="px-3 py-2 border rounded-md w-full"
+        />
+
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="px-3 py-2 border rounded-md w-full"
+        >
+          <option value="">All Categories</option>
+          {categories.map((cat) => (
+            <option key={cat!} value={cat!}>
+              {cat}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={selectedBrand}
+          onChange={(e) => setSelectedBrand(e.target.value)}
+          className="px-3 py-2 border rounded-md w-full"
+        >
+          <option value="">All Brands</option>
+          {brands.map((brand) => (
+            <option key={brand!} value={brand!}>
+              {brand}
+            </option>
+          ))}
+        </select>
+
+        <input
+          type="number"
+          placeholder="Min Price"
+          value={minPrice}
+          onChange={(e) =>
+            setMinPrice(e.target.value ? Number(e.target.value) : "")
+          }
+          className="px-3 py-2 border rounded-md w-full"
+        />
+
+        <input
+          type="number"
+          placeholder="Max Price"
+          value={maxPrice}
+          onChange={(e) =>
+            setMaxPrice(e.target.value ? Number(e.target.value) : "")
+          }
+          className="px-3 py-2 border rounded-md w-full"
+        />
+      </div>
+
+      {/* 🔹 Product Table */}
       {loading ? (
         <p className="text-gray-600">Loading products...</p>
-      ) : products.length === 0 ? (
+      ) : filteredProducts.length === 0 ? (
         <p className="text-gray-600">No products found.</p>
       ) : (
         <div className="overflow-x-auto bg-white shadow rounded-lg">
@@ -78,7 +201,7 @@ export default function ManageProduct() {
               </thead>
 
               <tbody className="bg-white divide-y divide-gray-200">
-                {products.map((product) => (
+                {filteredProducts.map((product) => (
                   <ProductRow key={product.productId} product={product} />
                 ))}
               </tbody>
@@ -97,13 +220,13 @@ function ProductRow({ product }: { product: ProductResponse }) {
       : "";
   return (
     <tr className="hover:bg-gray-50 transition-colors duration-200">
-      {/* Image column with next/image */}
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
         {product.images && product.images.length > 0 ? (
           <div className="w-16 h-16 relative">
             <Image
               src={imageUrl}
               alt={product.title}
+              sizes="64px"
               fill
               className="object-cover rounded-md border"
             />
@@ -139,6 +262,9 @@ function ProductRow({ product }: { product: ProductResponse }) {
 
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
         {product.brandName ?? "-"}
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+        {product.tags ?? "-"}
       </td>
 
       <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">

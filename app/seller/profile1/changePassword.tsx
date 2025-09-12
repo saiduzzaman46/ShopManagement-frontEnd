@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { X } from "lucide-react";
 import { z } from "zod";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface Props {
   closeModal: () => void;
@@ -42,6 +43,7 @@ const validateForm = (formData: FormData) => {
 };
 
 export default function ChangePassword({ closeModal }: Props) {
+  const router = useRouter();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,14 +52,11 @@ export default function ChangePassword({ closeModal }: Props) {
     const errorMessage = validateField(name, value);
     setErrors((prev) => ({ ...prev, [name]: errorMessage }));
   };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const formData = new FormData(e.currentTarget as HTMLFormElement);
+    const formData = new FormData(e.currentTarget);
     const validation = validateForm(formData);
-
-    // console.log(formData);
 
     if (!validation.success) {
       setErrors(validation.errors);
@@ -87,10 +86,20 @@ export default function ChangePassword({ closeModal }: Props) {
     }
 
     try {
+      // 1. Update password
       await axios.patch("/api/seller/updatepsaaword", formData);
-    } catch (error) {
+
+      // window.location.href = "/signin";
+      // // 2. Logout
+      // await axios.post("/api/logout");
+
+      // 3. Close modal
+      closeModal();
+
+      // 4. Force full page reload (triggers server redirect)
+    } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
-        if (error.status === 403) {
+        if (error.response.status === 403) {
           setErrors({
             ...errors,
             oldPassword: "Current password is incorrect",
@@ -100,8 +109,6 @@ export default function ChangePassword({ closeModal }: Props) {
       }
       console.log("Failed to update password:", error);
     }
-
-    closeModal();
   };
 
   return (
