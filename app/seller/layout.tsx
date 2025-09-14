@@ -1,9 +1,9 @@
-import Navbar from "@/components/navbar/navbar";
-import Sidebar from "@/components/sidebar";
-import Footer from "@/components/footer";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import axios from "axios";
+import Sidebar from "@/components/seller/sidebar";
+import Navbar from "@/components/seller/navbar/navbar";
+import Footer from "@/components/seller/footer";
 
 export default async function DashboardLayout({
   children,

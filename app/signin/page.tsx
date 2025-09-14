@@ -46,8 +46,8 @@ export default function LoginPage() {
 
       if (response.role === "seller") {
         router.push("/seller");
-      } else if (response.role === "admin") {
-        router.push("/admin");
+      } else if (response.role === "customer") {
+        router.push("/customer");
       } else {
         router.push("/signin");
       }
